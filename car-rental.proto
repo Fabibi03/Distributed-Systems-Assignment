@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package carrental;
+
+message Car {
+    string plate = 1;
+    string make = 2;
+    string model = 3;
+    int32 year = 4;
+    double daily_price = 5;
+    int32 mileage = 6;
+    string status = 7; // "AVAILABLE" or "UNAVAILABLE"
+}
+
+message User {
+    string username = 1;
+    string role = 2; // "customer" or "admin"
+}
+
+message AddCarRequest {
+    Car car = 1;
+}
+
+message AddCarResponse {
+    string plate = 1;
+}
+
+message CreateUsersResponse {
+    string message = 1;
+}
+
+message UpdateCarRequest {
+    string plate = 1;
+    Car car = 2;
+}
+
+message RemoveCarRequest {
+    string plate = 1;
+}
+
+message RemoveCarResponse {
+    repeated Car cars = 1;
+}
+
+message ListAvailableCarsRequest {
+    string filter = 1;
+}
+
+message SearchCarRequest {
+    string plate = 1;
+}
+
+message SearchCarResponse {
+    Car car = 1;
+    bool available = 2;
+    string message = 3;
+}
+
+message AddToCartRequest {
+    string username = 1;
+    string plate = 2;
+    string start_date = 3; // "YYYY-MM-DD"
+    string end_date = 4;   // "YYYY-MM-DD"
+}
+
+message AddToCartResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message PlaceReservationRequest {
+    string username = 1;
+}
+
+message Reservation {
+    string username = 1;
+    Car car = 2;
+    string start_date = 3;
+    string end_date = 4;
+    double total_price = 5;
+}
+
+message PlaceReservationResponse {
+    repeated Reservation reservations = 1;
+    string message = 2;
+}
+
+message ListReservationsResponse {
+    repeated Reservation reservations = 1;
+}
+
+service CarRentalService {
+    rpc add_car(AddCarRequest) returns (AddCarResponse);
+    rpc create_users(stream User) returns (CreateUsersResponse);
+    rpc update_car(UpdateCarRequest) returns (google.protobuf.Empty);
+    rpc remove_car(RemoveCarRequest) returns (RemoveCarResponse);
+    rpc list_available_cars(ListAvailableCarsRequest) returns (stream Car);
+    rpc search_car(SearchCarRequest) returns (SearchCarResponse);
+    rpc add_to_cart(AddToCartRequest) returns (AddToCartResponse);
+    rpc place_reservation(PlaceReservationRequest) returns (PlaceReservationResponse);
+    rpc list_reservations(google.protobuf.Empty) returns (ListReservationsResponse);
+}
